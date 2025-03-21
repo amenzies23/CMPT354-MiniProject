@@ -65,7 +65,7 @@ CREATE TABLE User (
 CREATE TABLE Employee (
     user_id INTEGER PRIMARY KEY,
     job_title TEXT,
-    salary INTEGER
+    salary INTEGER,
     FOREIGN KEY (user_id)
         REFERENCES User (user_id)
 );
