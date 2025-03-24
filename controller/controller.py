@@ -179,7 +179,16 @@ class Controller:
         return
 
     def request_recommendation(self) -> None:
-        display_message("request_recommendation")
+        if self.user_id is None:
+            display_error("Error: User ID not set.")
+            return
+        
+        recommended_events = self.library_manager.get_recommended_events(self.user_id)
+        if not recommended_events:
+            display_message("No recommended events found.")
+        else:
+            display_message("Recommended Events for you:")
+            display_events(recommended_events)
         return
 
     def exit_menu(self) -> None:
