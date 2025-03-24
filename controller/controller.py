@@ -8,7 +8,6 @@ class Controller:
 
         self.menu_entries = [
                 TextMenu.MenuEntry("Find an Item", self.find_item),
-                TextMenu.MenuEntry("Borrow an Item", self.borrow_item),
                 TextMenu.MenuEntry("Return an Item", self.return_item),
                 TextMenu.MenuEntry("Donate an Item", self.donate_item),
                 TextMenu.MenuEntry("Find an Event", self.find_event),
@@ -27,7 +26,7 @@ class Controller:
 
         while True:
             self.main_menu.display_menu()
-            option = self.get_selection(len(self.menu_entries))
+            option = self.get_selection(len(self.menu_entries), self.main_menu)
             self.menu_entries[option - 1].action()
 
     def prompt_for_user_id(self) -> None:
@@ -43,27 +42,77 @@ class Controller:
                     display_error(f"Error: Invalid User Id.")
             except ValueError:
                     display_error(f"Error: Invalid User Id.")
-        
 
-    def get_selection(self, max_value) -> int:
+    def get_selection(self, max_value, menu) -> int:
         while True:
             try:
                 selection = get_user_input_int(f"Enter [1-{max_value}]: ")
 
                 if 1 <= selection <= max_value:
                     return selection
-                self.main_menu.display_menu()
+                menu.display_menu()
                 display_error(f"Error: Enter a number between 1 and {max_value}.")
             except ValueError:
-                self.main_menu.display_menu()
+                menu.display_menu()
                 display_error(f"Error: Invalid input.")
 
     def find_item(self) -> None:
-        display_message("find_item")
-        return
-    
+        find_entries = [
+                TextMenu.MenuEntry("Find by title", self.find_title),
+                TextMenu.MenuEntry("Find by author", self.find_author),
+                TextMenu.MenuEntry("Find by artist", self.find_artist),
+                TextMenu.MenuEntry("Find by genre", self.find_genre),
+                TextMenu.MenuEntry("Exit", None)
+            ]
+        
+        find_menu = TextMenu("Find Item Menu", find_entries)
+        find_menu.display_menu()
+        option = self.get_selection(len(find_entries), find_menu)
+        find_entries[option - 1].action()
+
+        self.borrow_item()
+
+
+
+    def find_title(self) -> None:
+        title = get_user_input("Enter title of item: ")
+        items = self.library_manager.find_item(title)
+        if len(items) == 0:
+            display_message("\nNo Items Found.")
+        else:
+            display_message(f"\nNumber of Items Found: {len(items)}")
+            display_items(items)
+
+    def find_author(self) -> None:
+        author = get_user_input("Enter author's name: ")
+        items = self.library_manager.find_author(author)
+        if len(items) == 0:
+            display_message("\nNo Items Found.")
+        else:
+            display_message(f"\nNumber of Items Found: {len(items)}")
+            display_readings(items)
+
+    def find_artist(self) -> None:
+        artist = get_user_input("Enter artist's name: ")
+        items = self.library_manager.find_artist(artist)
+        if len(items) == 0:
+            display_message("\nNo Items Found.")
+        else:
+            display_message(f"\nNumber of Items Found: {len(items)}")
+            display_music(items)
+
+    def find_genre(self) -> None:
+        genre = get_user_input("Enter genre: ")
+        items = self.library_manager.find_genre(genre)
+        if len(items) == 0:
+            display_message("\nNo Items Found.")
+        else:
+            display_message(f"\nNumber of Items Found: {len(items)}")
+            display_items(items)
+
     def borrow_item(self) -> None:
-        display_message("borrow_item")
+        item_id = get_user_input_int("Type Item ID to Borrow: ")
+        print(item_id)
         return
     
     def return_item(self) -> None:
@@ -149,6 +198,7 @@ class Controller:
 
     def exit_menu(self) -> None:
         exit()
+
 
 
 
