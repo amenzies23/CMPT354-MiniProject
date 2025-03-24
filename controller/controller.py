@@ -75,11 +75,68 @@ class Controller:
         return
 
     def find_event(self) -> None:
-        display_message("find_event")
+        if self.user_id is None:
+            display_error("Error: User ID not set.")
+            return
+        
+        # Fetch recommended events for this user
+        recommended_events = self.library_manager.get_recommended_events(self.user_id)
+        if not recommended_events:
+            display_message("No recommended events found.")
+        else:
+            display_message("Recommended Events for you:")
+            for event in recommended_events:
+                display_message(f"Event ID: {event[0]}")
+                display_message(f"Description: {event[4]}")
+                display_message(f"Date: {event[5]}")
+                display_message(f"Time: {event[6]} - {event[7]}") 
+                display_message("-----------------------------")
+
+        # Display options
+        display_message("1. Register for an event")
+        display_message("2. View all events")
+        option = self.get_selection(2)
+
+        if option == 1:
+            self.register_event()
+        elif option == 2:
+            self.view_all_events()
+            
         return
+    
+    def view_all_events(self) -> None:
+        # Fetch all events from the database
+        all_events = self.library_manager.get_all_events()
+        if not all_events:
+            display_message("No events found.")
+        else:
+            display_message("All Events:")
+            for event in all_events:
+                display_message(f"Event ID: {event[0]}")
+                display_message(f"Description: {event[4]}")
+                display_message(f"Date: {event[5]}")
+                display_message(f"Time: {event[6]} - {event[7]}")
+                display_message("-----------------------------")
+                
+        while True:
+            display_message("1. Register for an event")
+            display_message("2. Exit")
+            option = self.get_selection(2)
+
+            if option == 1:
+                self.register_event()
+            elif option == 2:
+                break
 
     def register_event(self) -> None:
-        display_message("register_event")
+        if self.user_id is None:
+            display_error("Error: User ID not set.")
+            return
+        event_id = get_user_input_int("Enter the Event ID you want to register for: ")
+        if self.library_manager.register_user_for_event(self.user_id, event_id):
+            display_message("Successfully registered for the event.")
+        else:
+            display_error("Error: Could not register for the event.")
         return
 
     def volunteer(self) -> None:
