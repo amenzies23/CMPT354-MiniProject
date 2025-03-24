@@ -54,27 +54,27 @@ class LibraryManager:
 
         return res.fetchall()
 
-    def get_recommended_events(self, user_id):
+    def get_recommended_events(self, user_id) -> list:
         query = """
-        SELECT E.* 
-        FROM Events E
-        JOIN RecommendedFor R ON E.event_id = R.event_id
-        JOIN Audience A ON R.audience_id = A.audience_id
-        WHERE A.audience_id = (
-            SELECT audience_id 
-            FROM BelongsTo 
-            WHERE user_id = ?
-        )
-        """
+            SELECT E.* 
+            FROM Events E
+            JOIN RecommendedFor R ON E.event_id = R.event_id
+            JOIN Audience A ON R.audience_id = A.audience_id
+            WHERE A.audience_id = (
+                SELECT audience_id 
+                FROM BelongsTo 
+                WHERE user_id = ?
+            )
+            """
         self.cur.execute(query, (user_id,))
         return self.cur.fetchall()
 
-    def get_all_events(self):
+    def get_all_events(self) -> list:
         query = "SELECT * FROM Events"
         self.cur.execute(query)
         return self.cur.fetchall()
     
-    def register_user_for_event(self, user_id, event_id):
+    def register_user_for_event(self, user_id, event_id) -> bool:
         # Ensure the event exists
         event_query = "SELECT 1 FROM Events WHERE event_id = ?"
         self.cur.execute(event_query, (event_id,))

@@ -76,5 +76,15 @@ def display_music(items) -> None:
             )
             display_message(message)
     
-
-
+def display_events(events) -> None:
+    print()
+    for event in events:
+        message = (
+            f"Event ID: {event[0]}\n"
+            f"Room Number: {event[3]}\n"
+            f"Description: {event[4]}\n"
+            f"Date: {event[5]}\n"
+            f"Time: {event[6]} - {event[7]}\n"
+            f"---------------------------------\n"
+        )
+        display_message(message)

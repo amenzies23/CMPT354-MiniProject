@@ -11,7 +11,6 @@ class Controller:
                 TextMenu.MenuEntry("Return an Item", self.return_item),
                 TextMenu.MenuEntry("Donate an Item", self.donate_item),
                 TextMenu.MenuEntry("Find an Event", self.find_event),
-                TextMenu.MenuEntry("Register for an Event", self.register_event),
                 TextMenu.MenuEntry("Volunteering Opportunities", self.volunteer),
                 TextMenu.MenuEntry("Request For Recommendations", self.request_recommendation),
                 TextMenu.MenuEntry("Exit", self.exit_menu)
@@ -128,29 +127,22 @@ class Controller:
             display_error("Error: User ID not set.")
             return
         
-        # Fetch recommended events for this user
         recommended_events = self.library_manager.get_recommended_events(self.user_id)
         if not recommended_events:
             display_message("No recommended events found.")
         else:
             display_message("Recommended Events for you:")
-            for event in recommended_events:
-                display_message(f"Event ID: {event[0]}")
-                display_message(f"Description: {event[4]}")
-                display_message(f"Date: {event[5]}")
-                display_message(f"Time: {event[6]} - {event[7]}") 
-                display_message("-----------------------------")
+            display_events(recommended_events)
+        event_entries = [
+                TextMenu.MenuEntry("Register for an event", self.register_event),
+                TextMenu.MenuEntry("View all events", self.view_all_events),
+                TextMenu.MenuEntry("Exit to main menu", self.main_menu.display_menu),
+        ]
+        event_menu = TextMenu("Find Event Menu", event_entries)
+        event_menu.display_menu()
+        option = self.get_selection(len(event_entries), event_menu)
+        event_entries[option - 1].action()
 
-        # Display options
-        display_message("1. Register for an event")
-        display_message("2. View all events")
-        option = self.get_selection(2)
-
-        if option == 1:
-            self.register_event()
-        elif option == 2:
-            self.view_all_events()
-            
         return
     
     def view_all_events(self) -> None:
@@ -160,22 +152,16 @@ class Controller:
             display_message("No events found.")
         else:
             display_message("All Events:")
-            for event in all_events:
-                display_message(f"Event ID: {event[0]}")
-                display_message(f"Description: {event[4]}")
-                display_message(f"Date: {event[5]}")
-                display_message(f"Time: {event[6]} - {event[7]}")
-                display_message("-----------------------------")
-                
-        while True:
-            display_message("1. Register for an event")
-            display_message("2. Exit")
-            option = self.get_selection(2)
-
-            if option == 1:
-                self.register_event()
-            elif option == 2:
-                break
+            display_events(all_events)
+            
+        event_entries = [
+                TextMenu.MenuEntry("Register for an event", self.register_event),
+                TextMenu.MenuEntry("Exit to main menu", self.main_menu.display_menu),
+        ]
+        event_menu = TextMenu("View all events menu", event_entries)
+        event_menu.display_menu()
+        option = self.get_selection(len(event_entries), event_menu)
+        event_entries[option - 1].action()
 
     def register_event(self) -> None:
         if self.user_id is None:
