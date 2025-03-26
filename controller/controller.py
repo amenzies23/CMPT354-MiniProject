@@ -8,6 +8,7 @@ class Controller:
 
         self.menu_entries = [
                 TextMenu.MenuEntry("Find an Item", self.find_item),
+                TextMenu.MenuEntry("Borrow an Item", self.borrow_item),
                 TextMenu.MenuEntry("Return an Item", self.return_item),
                 TextMenu.MenuEntry("Donate an Item", self.donate_item),
                 TextMenu.MenuEntry("Find an Event", self.find_event),
@@ -69,24 +70,20 @@ class Controller:
         option = self.get_selection(len(find_entries), find_menu)
         find_entries[option - 1].action()
 
-        self.borrow_item()
-
-
-
     def find_title(self) -> None:
         title = get_user_input("Enter title of item: ")
         items = self.library_manager.find_item(title)
         if len(items) == 0:
-            display_message("\nNo Items Found.")
+            display_message("No Items Found.")
         else:
-            display_message(f"\nNumber of Items Found: {len(items)}")
+            display_message(f"Number of Items Found: {len(items)}")
             display_items(items)
 
     def find_author(self) -> None:
         author = get_user_input("Enter author's name: ")
         items = self.library_manager.find_author(author)
         if len(items) == 0:
-            display_message("\nNo Items Found.")
+            display_message("No Items Found.")
         else:
             display_message(f"\nNumber of Items Found: {len(items)}")
             display_readings(items)
@@ -95,24 +92,27 @@ class Controller:
         artist = get_user_input("Enter artist's name: ")
         items = self.library_manager.find_artist(artist)
         if len(items) == 0:
-            display_message("\nNo Items Found.")
+            display_message("No Items Found.")
         else:
-            display_message(f"\nNumber of Items Found: {len(items)}")
+            display_message(f"Number of Items Found: {len(items)}")
             display_music(items)
 
     def find_genre(self) -> None:
         genre = get_user_input("Enter genre: ")
         items = self.library_manager.find_genre(genre)
         if len(items) == 0:
-            display_message("\nNo Items Found.")
+            display_message("No Items Found.")
         else:
-            display_message(f"\nNumber of Items Found: {len(items)}")
+            display_message(f"Number of Items Found: {len(items)}")
             display_items(items)
 
     def borrow_item(self) -> None:
         item_id = get_user_input_int("Type Item ID to Borrow: ")
-        print(item_id)
-        return
+        if not self.library_manager.borrow_item(self.user_id, item_id):
+            display_message("No Item Found.")
+        else:
+            display_message(f"Item {item_id} successfully borrowed")
+
     
     def return_item(self) -> None:
         display_message("return_item")
