@@ -13,6 +13,7 @@ class Controller:
                 TextMenu.MenuEntry("Find an Event", self.find_event),
                 TextMenu.MenuEntry("Volunteering Opportunities", self.volunteer),
                 TextMenu.MenuEntry("Request For Recommendations", self.request_recommendation),
+                TextMenu.MenuEntry("Ask a librarian for help", self.librarian_help),
                 TextMenu.MenuEntry("Exit", self.exit_menu)
             ]
         self.main_menu = TextMenu("Main Menu", self.menu_entries)
@@ -189,6 +190,10 @@ class Controller:
         else:
             display_message("Recommended Events for you:")
             display_events(recommended_events)
+        return
+    
+    def librarian_help(self) -> None:
+        display_message("librarian_help")
         return
 
     def exit_menu(self) -> None:
