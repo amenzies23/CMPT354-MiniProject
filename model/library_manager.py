@@ -54,6 +54,24 @@ class LibraryManager:
 
         return res.fetchall()
 
+    def borrow_item(self, user_id, item_id) -> bool:
+        # Ensure item exists or available
+        query = "SELECT * FROM Item WHERE item_id = ? AND status LIKE 'Available'"
+        self.cur.execute(query, (item_id,))
+        if not self.cur.fetchone():
+            return False
+
+        query = "INSERT INTO Borrows (user_id, item_id) VALUES (?, ?)"
+        self.cur.execute(query, (user_id, item_id))
+
+        query = "UPDATE Item SET status = 'Not available' WHERE item_id = ?"
+        self.cur.execute(query, (item_id,))
+        self.con.commit()
+
+        return True
+
+
+
     def get_recommended_events(self, user_id) -> list:
         query = """
             SELECT E.* 
