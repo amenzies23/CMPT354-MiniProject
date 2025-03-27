@@ -154,8 +154,41 @@ class Controller:
         return
 
     def donate_item(self) -> None:
-        display_message("donate_item")
-        return
+        while True:
+            type_of_item = get_user_input("Donate Reading or Music (-1 to Cancel): ")
+            if type_of_item == "-1":
+                return
+            elif type_of_item in {"Reading", "Music"}:
+                title = get_user_input("Provide Title: ")
+                category = get_user_input("Provide Item Category: ")
+                genre = get_user_input("Provide Genre: ")
+                publisher_name = get_user_input("Provide Publisher Name: ")
+                isbn = ""
+                num_songs = 0
+                author = ""
+                artist = ""
+
+
+                if type_of_item == "Reading":
+                    author = get_user_input("Provide Author: ")
+                    while True:
+                        isbn = get_user_input("Provide isbn (13 digits): ")
+                        if len(isbn) == 13 and isbn.isdigit():
+                            break
+                        display_error(f"Error: Invalid Input.\n")
+                elif type_of_item == "Music":
+                    artist = get_user_input("Provide Artist: ")
+                    while True:
+                        try:
+                            num_songs = get_user_input_int("Provide Number of Songs: ")
+                            break
+                        except ValueError:
+                            display_error(f"Error: Invalid Input.\n")
+                self.library_manager.donate_item(type_of_item, title, artist, author, isbn, num_songs, category, genre, publisher_name)
+                display_message(f"Item successfully donated\n")
+                break
+            else:
+                display_error(f"Error: Invalid Input.\n")
 
     def find_event(self) -> None:
         if self.user_id is None:

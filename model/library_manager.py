@@ -95,6 +95,35 @@ class LibraryManager:
 
         return True
 
+    def donate_item(self, type_of_item, title, artist, author, isbn, num_songs, category, genre, publisher_name) -> None:
+        # find the category id
+        query = "SELECT category_id FROM ItemCategory WHERE category_name = ?"
+        self.cur.execute(query, (category,))
+        category = self.cur.fetchone()
+        category_id = None
+
+        if category:
+            category_id = category[0]
+        else:
+            query = "INSERT INTO ItemCategory (category_name) VALUES (?)"
+            self.cur.execute(query, (category,))
+            category_id = self.cur.lastrowid
+        
+        query = "INSERT INTO Item (category_id, library_name, address, title, status, genre, publisher_name) VALUES (?, 'Burnaby Public Library', '7311 Kingsway', ?, 'To Be Added', ?, ?)"
+
+        self.cur.execute(query, (category_id, title, genre, publisher_name))
+
+        item_id = self.cur.lastrowid
+
+        if type_of_item == "Reading":
+            query = "INSERT INTO Reading (item_id, isbn, author) VALUES (?, ?, ?)"
+            self.cur.execute(query, (item_id, isbn, author))
+        elif type_of_item == "Music":
+            query = "INSERT INTO Music (item_id, artist, num_songs) VALUES (?, ?, ?)"
+            self.cur.execute(query, (item_id, artist, num_songs))
+        self.con.commit()
+
+
     def get_recommended_events(self, user_id) -> list:
         query = """
             SELECT E.* 
