@@ -16,7 +16,7 @@ class TextMenu:
         self.entries = entries
 
     def display_menu(self):
-        print(f"\n{self.title}")
+        print(f"{self.title}")
         for i, entry in enumerate(self.entries, start=1):
             print(f"{i}. {entry.text}")
 

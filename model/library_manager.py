@@ -70,7 +70,30 @@ class LibraryManager:
 
         return True
 
+    def get_all_borrowed_items(self, user_id) -> list:
+        query = """
+            SELECT i.item_id, title, borrow_date, due_date
+            FROM Borrows b INNER JOIN Item i ON b.item_id = i.item_id
+            WHERE user_id = ? AND status LIKE 'Not available'
+            """
+        self.cur.execute(query, (user_id,))
 
+        return self.cur.fetchall()
+
+    def return_item(self, user_id, item_id ) -> bool:
+        query = "SELECT * FROM Item WHERE item_id = ? AND status LIKE 'Not available'"
+        self.cur.execute(query, (item_id,))
+        if not self.cur.fetchone():
+            return False
+
+        query = "DELETE FROM Borrows WHERE item_id = ? AND user_id = ?"
+        self.cur.execute(query, (item_id, user_id))
+
+        query = "UPDATE Item SET status = 'Available' WHERE item_id = ?"
+        self.cur.execute(query, (item_id,))
+        self.con.commit()
+
+        return True
 
     def get_recommended_events(self, user_id) -> list:
         query = """

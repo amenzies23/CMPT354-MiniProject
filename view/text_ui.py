@@ -11,7 +11,6 @@ def get_user_input(prompt) -> str:
     return input(prompt)
 
 def display_items(items) -> None:
-    print("---------------------------------")
     for item in items:
         if item[9] == None:
             message = (
@@ -43,7 +42,6 @@ def display_items(items) -> None:
             display_message(message)
 
 def display_readings(items) -> None:
-    print()
     for item in items:
             message = (
                 f"Item ID: {item[0]}\n"
@@ -59,8 +57,18 @@ def display_readings(items) -> None:
             )
             display_message(message)
 
+def display_borrowed_items(items) -> None:
+    for item in items:
+        message = (
+            f"Item ID: {item[0]}\n"
+            f"Title: {item[1]}\n"
+            f"Borrow Date: {item[2]}\n"
+            f"Due Date: {item[3]}\n"
+            f"---------------------------------\n"
+        )
+        display_message(message)
+
 def display_music(items) -> None:
-    print()
     for item in items:
             message = (
                 f"Item ID: {item[0]}\n"
@@ -77,7 +85,6 @@ def display_music(items) -> None:
             display_message(message)
     
 def display_events(events) -> None:
-    print()
     for event in events:
         message = (
             f"Event ID: {event[0]}\n"

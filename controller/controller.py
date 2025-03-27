@@ -34,27 +34,29 @@ class Controller:
         while to_repeat:
             try:
                 user_id = get_user_input_int("Enter your User ID: ")
+                display_message("")
 
                 if self.library_manager.find_user_id(user_id):
                     self.set_user_id(user_id)
                     to_repeat = False
                 else:
-                    display_error(f"Error: Invalid User Id.")
+                    display_error(f"Error: Invalid User Id.\n")
             except ValueError:
-                    display_error(f"Error: Invalid User Id.")
+                    display_error(f"Error: Invalid User Id.\n")
 
     def get_selection(self, max_value, menu) -> int:
         while True:
             try:
                 selection = get_user_input_int(f"Enter [1-{max_value}]: ")
+                display_message("")
 
                 if 1 <= selection <= max_value:
                     return selection
                 menu.display_menu()
-                display_error(f"Error: Enter a number between 1 and {max_value}.")
+                display_error(f"Error: Enter a number between 1 and {max_value}.\n")
             except ValueError:
                 menu.display_menu()
-                display_error(f"Error: Invalid input.")
+                display_error(f"Error: Invalid input.\n")
 
     def find_item(self) -> None:
         find_entries = [
@@ -68,54 +70,86 @@ class Controller:
         find_menu = TextMenu("Find Item Menu", find_entries)
         find_menu.display_menu()
         option = self.get_selection(len(find_entries), find_menu)
-        find_entries[option - 1].action()
+        selected_action = find_entries[option - 1].action
+
+        if selected_action:
+            selected_action()
 
     def find_title(self) -> None:
         title = get_user_input("Enter title of item: ")
+        display_message("")
         items = self.library_manager.find_item(title)
         if len(items) == 0:
-            display_message("No Items Found.")
+            display_message("No Items Found.\n")
         else:
-            display_message(f"Number of Items Found: {len(items)}")
+            display_message(f"Number of Items Found: {len(items)}\n")
             display_items(items)
 
     def find_author(self) -> None:
         author = get_user_input("Enter author's name: ")
+        display_message("")
         items = self.library_manager.find_author(author)
         if len(items) == 0:
-            display_message("No Items Found.")
+            display_message("No Items Found.\n")
         else:
-            display_message(f"\nNumber of Items Found: {len(items)}")
+            display_message(f"Number of Items Found: {len(items)}\n")
             display_readings(items)
 
     def find_artist(self) -> None:
         artist = get_user_input("Enter artist's name: ")
+        display_message("")
         items = self.library_manager.find_artist(artist)
         if len(items) == 0:
-            display_message("No Items Found.")
+            display_message("No Items Found.\n")
         else:
-            display_message(f"Number of Items Found: {len(items)}")
+            display_message(f"Number of Items Found: {len(items)}\n")
             display_music(items)
 
     def find_genre(self) -> None:
         genre = get_user_input("Enter genre: ")
+        display_message("")
         items = self.library_manager.find_genre(genre)
         if len(items) == 0:
-            display_message("No Items Found.")
+            display_message("No Items Found.\n")
         else:
-            display_message(f"Number of Items Found: {len(items)}")
+            display_message(f"Number of Items Found: {len(items)}\n")
             display_items(items)
 
     def borrow_item(self) -> None:
-        item_id = get_user_input_int("Type Item ID to Borrow: ")
-        if not self.library_manager.borrow_item(self.user_id, item_id):
-            display_message("No Item Found.")
-        else:
-            display_message(f"Item {item_id} successfully borrowed")
+        try:
+            item_id = get_user_input_int("Type Item ID to Borrow (-1 to Cancel): ")
+            display_message("")
+            if item_id == -1:
+                return
+            elif not self.library_manager.borrow_item(self.user_id, item_id):
+                display_message("No Item Found.\n")
+            else:
+                display_message(f"Item {item_id} successfully borrowed\n")
+        except ValueError:
+            display_error(f"Error: Invalid Input.\n")
 
     
     def return_item(self) -> None:
-        display_message("return_item")
+        items = self.library_manager.get_all_borrowed_items(self.user_id)
+        if len(items) == 0:
+            display_message("No Items Found.\n")
+        else:
+            display_borrowed_items(items)
+            # implement the update query 
+            self.update_item_status()
+    
+    def update_item_status(self) -> None:
+        try:
+            item_id = get_user_input_int("Type Item ID to Return (-1 to Cancel): ")
+            display_message("")
+            if item_id == -1:
+                return
+            elif not self.library_manager.return_item(self.user_id, item_id):
+                display_message("Not a Valid Item.\n")
+            else:
+                display_message(f"Item {item_id} successfully returned\n")
+        except ValueError:
+            display_error(f"Error: Invalid Input.\n")
         return
 
     def donate_item(self) -> None:
