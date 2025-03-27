@@ -109,3 +109,19 @@ def display_library_info(library_data) -> None:
         f"---------------------------------\n"
     )
     display_message(message)
+
+def display_cli_instructions() -> None:
+    instructions = (
+        "Command Line Interface Instructions:\n"
+        "1. Navigation:\n"
+        "  - Use the numbers to select menu options\n"
+        "  - Press Enter to confirm your selection\n"
+        "2. Searching for Items:\n"
+        "  - You can search by title, author, artist or genre\n"
+        "3. Borrowing:\n"
+        "  - You'll need the Item ID to borrow\n"
+        "  - Find this through search first\n"
+        "4. Need more help?\n"
+        "  - Select other options from this menu\n"
+    )
+    display_message(instructions)

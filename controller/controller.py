@@ -288,24 +288,7 @@ class Controller:
         help_entries[option - 1].action()
         
     def cli_instructions(self) -> None:
-        instructions = """
-            Command Line Interface Instructions:
-            
-            1. Navigation:
-            - Use the numbers to select menu options
-            - Press Enter to confirm your selection
-            
-            2. Searching for Items:
-            - You can search by title, author, artist or genre
-            
-            3. Borrowing:
-            - You'll need the Item ID to borrow
-            - Find this through search first
-            
-            4. Need more help?
-            - Select other options from this menu
-            """
-        display_message(instructions)
+        display_cli_instructions()
         return_to_menu = [
             TextMenu.MenuEntry("Return to help menu", self.librarian_help),
             TextMenu.MenuEntry("Return to main menu", self.main_menu.display_menu)
