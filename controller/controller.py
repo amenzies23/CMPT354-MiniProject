@@ -260,8 +260,38 @@ class Controller:
         return
     
     def librarian_help(self) -> None:
-        display_message("librarian_help")
-        return
+        help_entries = [
+            TextMenu.MenuEntry("How to use this system", self.cli_instructions),
+            #TextMenu.MenuEntry("Find where a book is located", self.locate_book),
+            TextMenu.MenuEntry("Library hours and information", self.library_info),
+            TextMenu.MenuEntry("Contact a librarian directly", self.contact_librarian),
+            TextMenu.MenuEntry("Return to main menu", None)
+        ]
+    
+        help_menu = TextMenu("Librarian Help Menu", help_entries)
+        help_menu.display_menu()
+        option = self.get_selection(len(help_entries), help_menu)
+        help_entries[option - 1].action()
+        
+    def cli_instructions(self) -> None:
+        instructions = """
+            Command Line Interface Instructions:
+            
+            1. Navigation:
+            - Use the numbers to select menu options
+            - Press Enter to confirm your selection
+            
+            2. Searching for Items:
+            - You can search by title, author, or genre
+            
+            3. Borrowing:
+            - You'll need the Item ID to borrow
+            - Find this through search first
+            
+            4. Need more help?
+            - Select other options from this menu
+            """
+        display_message(instructions)
 
     def exit_menu(self) -> None:
         exit()
