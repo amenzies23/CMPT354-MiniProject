@@ -95,3 +95,17 @@ def display_events(events) -> None:
             f"---------------------------------\n"
         )
         display_message(message)
+
+def display_library_info(library_data) -> None:
+    message = (
+        f"\nLibrary Name: {library_data[0][0]}\n"
+        f"Address: {library_data[0][1]}\n"
+        f"Phone: {library_data[0][2]}\n"
+        f"Email: {library_data[0][3]}\n"
+        f"\nHours:\n"
+        f"Monday-Friday: 9am - 9pm\n"
+        f"Saturday: 10am - 6pm\n"
+        f"Sunday: 12pm - 5pm\n"
+        f"---------------------------------\n"
+    )
+    display_message(message)

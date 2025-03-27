@@ -164,5 +164,21 @@ class LibraryManager:
         self.cur.execute(insert_query, (user_id, event_id))
         self.con.commit()
         return True
+    
+    def get_library_info(self) -> list:
+        query = "SELECT * FROM Library"
+        self.cur.execute(query)
+        return self.cur.fetchall()
         
-
+    def register_volunteer(self, user_id) -> bool:
+        check_query = "SELECT 1 FROM Employee WHERE user_id = ?"
+        self.cur.execute(check_query, (user_id,))
+        if self.cur.fetchone():
+            return False # Means user already exists in Employee table
+        # If we get here, register new volunteer
+        insert_query =    """INSERT INTO Employee (user_id, salary, job_title)
+                          VALUES (?, 0, 'Volunteer')
+                          """
+        self.cur.execute(insert_query, (user_id,))
+        self.con.commit()
+        return True

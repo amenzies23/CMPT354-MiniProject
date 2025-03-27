@@ -12,8 +12,8 @@ class Controller:
                 TextMenu.MenuEntry("Return an Item", self.return_item),
                 TextMenu.MenuEntry("Donate an Item", self.donate_item),
                 TextMenu.MenuEntry("Find an Event", self.find_event),
+                TextMenu.MenuEntry("Request Event Recommendations", self.request_recommendation),
                 TextMenu.MenuEntry("Volunteering Opportunities", self.volunteer),
-                TextMenu.MenuEntry("Request For Recommendations", self.request_recommendation),
                 TextMenu.MenuEntry("Ask a librarian for help", self.librarian_help),
                 TextMenu.MenuEntry("Exit", self.exit_menu)
             ]
@@ -243,7 +243,22 @@ class Controller:
         return
 
     def volunteer(self) -> None:
-        display_message("volunteer")
+        display_message("Volunteering Opportunities\n")
+        display_message("We are always looking for volunteers to help with our events and programs.")
+        display_message("Please confirm here if you would like to volunteer with the lirbary:")
+        decision = get_user_input("Type 'yes' to volunteer or 'no' to exit: ")
+        # Making the user type yes as a way to confirm their decision, but we also need to check for existing user in employee table
+        if decision == "yes":
+            result = self.library_manager.register_volunteer(self.user_id)
+            if result:
+                display_message("Thank you for volunteering with us!\n"
+                "A librarian will reach out to you shortly with more information on how to proceed.\n")
+            else:
+                display_error("\nError: Could not register as volunteer.\n"
+                "Please come see a librarian for more information.\n")
+
+        elif decision == "no":
+            display_message("Thank you for considering volunteering with us.")
         return
 
     def request_recommendation(self) -> None:
@@ -262,10 +277,9 @@ class Controller:
     def librarian_help(self) -> None:
         help_entries = [
             TextMenu.MenuEntry("How to use this system", self.cli_instructions),
-            #TextMenu.MenuEntry("Find where a book is located", self.locate_book),
             TextMenu.MenuEntry("Library hours and information", self.library_info),
-            TextMenu.MenuEntry("Contact a librarian directly", self.contact_librarian),
-            TextMenu.MenuEntry("Return to main menu", None)
+            TextMenu.MenuEntry("Contact a librarian", self.contact_librarian),
+            TextMenu.MenuEntry("Return to main menu", self.main_menu.display_menu)
         ]
     
         help_menu = TextMenu("Librarian Help Menu", help_entries)
@@ -282,7 +296,7 @@ class Controller:
             - Press Enter to confirm your selection
             
             2. Searching for Items:
-            - You can search by title, author, or genre
+            - You can search by title, author, artist or genre
             
             3. Borrowing:
             - You'll need the Item ID to borrow
@@ -292,6 +306,58 @@ class Controller:
             - Select other options from this menu
             """
         display_message(instructions)
+        return_to_menu = [
+            TextMenu.MenuEntry("Return to help menu", self.librarian_help),
+            TextMenu.MenuEntry("Return to main menu", self.main_menu.display_menu)
+        ]
+        return_menu = TextMenu("Library Info Menu", return_to_menu)
+        return_menu.display_menu()
+
+        option = self.get_selection(len(return_to_menu), return_menu)
+        return_to_menu[option - 1].action()
+
+    def library_info(self) -> None:
+        library_data = self.library_manager.get_library_info()
+        if not library_data:
+            display_error("Error: Library information not available in database.")
+            return
+        
+        display_library_info(library_data)
+
+        return_to_menu = [
+            TextMenu.MenuEntry("Return to help menu", self.librarian_help),
+            TextMenu.MenuEntry("Return to main menu", self.main_menu.display_menu)
+        ]
+        return_menu = TextMenu("Library Info Menu", return_to_menu)
+        return_menu.display_menu()
+
+        option = self.get_selection(len(return_to_menu), return_menu)
+        return_to_menu[option - 1].action()
+
+    def contact_librarian(self) -> None:
+        display_message("Contact a librarian\n")
+        display_message("\nPlease leave your message and contact information below,"
+        "\nand a librarian will get back to you as soon as possible.")
+        # For now, since we dont have any functionality for a librarian to reach back out, this is going nowhere.
+        while True:
+            email = get_user_input("\nYour email address: ").strip()
+            if "@" in email and "." in email:  # Very basic email check
+                break
+            display_error("\nPlease enter a valid email address (example@domain.com)")
+        message = get_user_input("\nEnter your message: ")
+        display_message("\nThank you for your message!\n")
+        display_message("A librarian will reach out to you shortly!\n")
+        return_to_menu = [
+            TextMenu.MenuEntry("Return to help menu", self.librarian_help),
+            TextMenu.MenuEntry("Return to main menu", self.main_menu.display_menu)
+        ]
+        return_menu = TextMenu("Please return to the main menu or help menu", return_to_menu)
+        return_menu.display_menu()
+
+        option = self.get_selection(len(return_to_menu), return_menu)
+        return_to_menu[option - 1].action()
+
+        return
 
     def exit_menu(self) -> None:
         exit()
