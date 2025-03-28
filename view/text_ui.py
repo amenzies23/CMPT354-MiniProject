@@ -125,3 +125,4 @@ def display_cli_instructions() -> None:
         "  - Select other options from this menu\n"
     )
     display_message(instructions)
+

@@ -136,7 +136,6 @@ class Controller:
             display_message("No Items Found.\n")
         else:
             display_borrowed_items(items)
-            # implement the update query 
             self.update_item_status()
     
     def update_item_status(self) -> None:
@@ -153,6 +152,31 @@ class Controller:
             display_error(f"Error: Invalid Input.\n")
         return
 
+    def get_item_categories(self, type_of_item) -> str:
+        item_categories = None
+        if type_of_item == "Reading":
+            item_categories = [
+                    TextMenu.MenuEntry("Book", self.return_string("Book")),
+                    TextMenu.MenuEntry("Journal", self.return_string("Journal")),
+                    TextMenu.MenuEntry("Online Book", self.return_string("Online Book")),
+                    TextMenu.MenuEntry("Magazine", self.return_string("Magainze")),
+                ]
+        else:
+            item_categories = [
+                    TextMenu.MenuEntry("CD", self.return_string("CD")),
+                    TextMenu.MenuEntry("Vinyl", self.return_string("Vinyl"))
+                ]
+
+
+        item_category_menu = TextMenu("Select Item Category", item_categories)
+        item_category_menu.display_menu()
+        option = self.get_selection(len(item_categories), item_category_menu)
+        return item_categories[option - 1].action
+
+
+    def return_string(self, item_category) -> str:
+        return item_category
+
     def donate_item(self) -> None:
         while True:
             type_of_item = get_user_input("Donate Reading or Music (-1 to Cancel): ")
@@ -160,7 +184,7 @@ class Controller:
                 return
             elif type_of_item in {"Reading", "Music"}:
                 title = get_user_input("Provide Title: ")
-                category = get_user_input("Provide Item Category: ")
+                category = self.get_item_categories(type_of_item)
                 genre = get_user_input("Provide Genre: ")
                 publisher_name = get_user_input("Provide Publisher Name: ")
                 isbn = ""
