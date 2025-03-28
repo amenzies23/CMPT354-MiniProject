@@ -74,7 +74,7 @@ class LibraryManager:
         query = """
             SELECT i.item_id, title, borrow_date, due_date
             FROM Borrows b INNER JOIN Item i ON b.item_id = i.item_id
-            WHERE user_id = ? AND status LIKE 'Not available'
+            WHERE user_id = ? AND status LIKE 'Not available' AND return_date IS NULL
             """
         self.cur.execute(query, (user_id,))
 
@@ -86,7 +86,7 @@ class LibraryManager:
         if not self.cur.fetchone():
             return False
 
-        query = "DELETE FROM Borrows WHERE item_id = ? AND user_id = ?"
+        query = "UPDATE Borrows SET return_date = datetime('now', 'localtime') WHERE item_id = ? AND user_id = ?"
         self.cur.execute(query, (item_id, user_id))
 
         query = "UPDATE Item SET status = 'Available' WHERE item_id = ?"
