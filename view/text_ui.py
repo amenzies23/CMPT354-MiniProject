@@ -1,3 +1,6 @@
+#
+# TextUi.py provides utility functions for user input/output to the command line.
+#
 def display_message(message) -> None:
     print(message)
 
@@ -11,6 +14,7 @@ def get_user_input(prompt) -> str:
     return input(prompt)
 
 def display_items(items) -> None:
+    # SQL query left joined both Reading and Music table.
     for item in items:
         if item[9] == None:
             message = (

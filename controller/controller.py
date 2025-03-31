@@ -1,6 +1,10 @@
 from view.text_menu import TextMenu
 from view.text_ui import *
 
+#
+# Controller class allows for communication between the model and view. It is responsible
+# for initialzing the menues, receiving user input and sending to the database.
+#
 class Controller:
     def __init__(self, library_manager) -> None:
         self.library_manager = library_manager

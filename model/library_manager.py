@@ -1,5 +1,8 @@
 import sqlite3
 
+#
+# LibraryManager class models the communcation between python and SQLite3
+#
 class LibraryManager:
     def __init__(self):
         self.con = sqlite3.connect("library.db")
@@ -55,7 +58,7 @@ class LibraryManager:
         return res.fetchall()
 
     def borrow_item(self, user_id, item_id) -> bool:
-        # Ensure item exists or available
+        # Ensure item exists and available
         query = "SELECT * FROM Item WHERE item_id = ? AND status LIKE 'Available'"
         self.cur.execute(query, (item_id,))
         if not self.cur.fetchone():
@@ -81,6 +84,7 @@ class LibraryManager:
         return self.cur.fetchall()
 
     def return_item(self, user_id, item_id ) -> bool:
+        # Ensure item exists and not available
         query = "SELECT * FROM Item WHERE item_id = ? AND status LIKE 'Not available'"
         self.cur.execute(query, (item_id,))
         if not self.cur.fetchone():
