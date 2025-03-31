@@ -347,14 +347,9 @@ class Controller:
 
     def contact_librarian(self) -> None:
         display_message("Contact a librarian\n")
-        display_message("\nPlease leave your message and contact information below,"
-        "\nand a librarian will get back to you as soon as possible.")
-        # For now, since we dont have any functionality for a librarian to reach back out, this is going nowhere.
-        while True:
-            email = get_user_input("\nYour email address: ").strip()
-            if "@" in email and "." in email:  # Very basic email check
-                break
-            display_error("\nPlease enter a valid email address (example@domain.com)")
+        display_message("\nPlease leave your message below and a librarian"
+        "\nwill get back to you as soon as possible to your email on file.")
+
         message = get_user_input("\nEnter your message: ")
         display_message("\nThank you for your message!\n")
         display_message("A librarian will reach out to you shortly!\n")
